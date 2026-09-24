@@ -1,39 +1,55 @@
 const todoInput = document.getElementById("todo-input");
 const addBtn = document.getElementById("add-btn");
-const todolist = document.getElementById("todo-list");
+const todoList = document.getElementById("todo-list");
 
-// // Add Event Listener to the Add Button
-// addBtn.addEventListener("click", function() {
-//     const taskText = todoInput.value;
+// Local Storage
+let tasks = JSON.parse(localStorage.getItem("myTasks")) || [];
+console.log(tasks);
 
-//     if(taskText === "") {
-//         alert("Please enter a task!");
-//         return;
-//     }
-    
-//     // Create new <li> element
-//     const li = document.createElement("li");
-//     li.textContent = taskText;
+function renderTasks() {
+  todoList.innerHTML = "";
 
-//     // Toggle completed status of click
-//     li.addEventListener("click", function() {
-//         li.classList.toggle("completed");
-//     })
+  tasks.forEach(function (task, index) {
+    const li = document.createElement("li");
+    li.textContent = task;
 
-//     // Create Delete Button
-//     const deleteBtn = document.createElement("button");
-//     deleteBtn.textContent = "X";
-//     deleteBtn.classList.add("delete-btn");
+    const deleteButton = document.createElement("button");
+    deleteButton.textContent = "X";
+    deleteButton.classList.add("delete-btn");
 
-//     // Delete item on click
-//     deleteBtn.addEventListener("click", function() {
-//         li.remove();
-//     })
+    deleteButton.addEventListener("click", function () {
+      deleteTask(index);
+    });
 
-//     // Appen delete button to li
-//     li.appendChild(deleteBtn);
-//     todolist.appendChild(li);
+    li.append(deleteButton);
+    todoList.appendChild(li);
+  });
+}
 
-//     // Clear input field
-//     todoInput.value = "";
-// })
+// Delete Task Function
+function deleteTask(index) {
+  tasks.splice(index, 1);
+  saveAndRender();
+}
+
+// Save to current array to localStorage
+function saveAndRender() {
+  localStorage.setItem("myTasks", JSON.stringify(tasks)); //save
+  renderTasks();
+}
+
+// Function to add a new task
+addBtn.addEventListener("click", function () {
+  const taskText = todoInput.value.trim(); // Homework
+
+  if (taskText === "") {
+    alert("Please enter a task!");
+    return;
+  }
+
+  tasks.push(taskText); // [Homework]
+  todoInput.value = "";
+  saveAndRender();
+});
+
+renderTasks(); //initial run
